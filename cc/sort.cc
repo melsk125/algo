@@ -6,14 +6,14 @@
 namespace cc {
 
 void InsertionSort(std::vector<int>& input) {
-  for (int i = 1; i < input.size(); i++) {
-    int key = input.at(i);
-    int j = i - 1;
-    while (j >= 0 && input.at(j) > key) {
-      input[j + 1] = input[j];
-      j--;
+  for (int key_index = 1; key_index < input.size(); key_index++) {
+    int key = input.at(key_index);
+    int insert_location = key_index - 1;
+    while (insert_location >= 0 && input.at(insert_location) > key) {
+      input[insert_location + 1] = input[insert_location];
+      insert_location--;
     }
-    input[j + 1] = key;
+    input[insert_location + 1] = key;
   }
 }
 
