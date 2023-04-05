@@ -12,6 +12,7 @@ cc_test(
     srcs = ["sort-test.cc"],
     copts = ["-Iexternal/gtest/include"],
     deps = [
+        "@com_google_absl//absl/strings",
         "@gtest//:gtest_main",
         ":sort",
     ],
