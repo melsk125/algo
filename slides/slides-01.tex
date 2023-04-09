@@ -1,15 +1,12 @@
 % LuaLaTeX文書; 文字コードはUTF-8
-\documentclass[unicode,12pt,aspectratio=169]{beamer} % 'unicode'が必要
+\documentclass[unicode,12pt,aspectratio=169,notes]{beamer} % 'unicode'が必要
 \usepackage{luatexja} % 日本語したい
-% \usepackage[ipaex]{luatexja-preset} % IPAexフォントしたい
-% \renewcommand{\kanjifamilydefault}{\gtdefault} % 既定をゴシック体に
 
-
+\usepackage{algpseudocode} % 擬似コード
 \usepackage{geometry}
 \usepackage{pxrubrica}
 \usepackage{import}
 
-% あとは欧文の場合と同じ
 \usetheme{boxes}
 
 \title{精読『アルゴリズムイントロダクション 第4版』}
@@ -23,17 +20,37 @@
  \titlepage{}
 \end{frame}
 
+\note[itemize]{
+  \item 今回のイベントは読書会発表兼講義という形です。
+  \item 自分のアルゴリズムの復習を兼ねて、アルゴリズムをちゃんと勉強したい方のために
+  できるだけわかりやすく説明するつもりです。
+  \item この世界的アルゴリズムの聖書と言われている教科書の理解のためになれれば幸いです
+  \item 質問や指摘はチャットで自由に書いて、僕は適当に拾って答えます。
+  \item 前提知識として、初歩的なプログラミングと、数列の和やべき乗や対数ができること
+  \item アルゴリズムのC++実装例とこのスライドを github で配布する予定です。
+}
+
 \begin{frame}{今日の範囲}
   第１章：計算におけるアルゴリズムの役割
+
   第２章：さあ、始めよう
+
   第３章：実行時間の特徴づけ
 \end{frame}
+
+\note[itemize]{
+  \item 今日の範囲は第１章から第３章です
+  \item 第１章と第２章の内容はほとんど同じですが、第３章の内容はコアが同じですが、
+  もっとわかりやすく更新されています。
+  \item 章のタイトルも「Growth of Functions」「関数の増加」から
+  「Characterizing Running Time」「実行時間の特徴づけ」に変わっています。
+}
 
 \begin{frame}{今日の内容}
   \begin{itemize}
     \item アルゴリズムとは？
-    \item なぜアルゴリズムの研究が必要なのか？
-    \item アルゴリズム解析
+    \item なぜアルゴリズムの理解が必要なのか？
+    \item アルゴリズム解析の概要
       \begin{itemize}
         \item 挿入ソート
         \item マージソート
@@ -46,7 +63,22 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{アルゴリズムとは}
+\note[itemize]{
+  \item 第１章：「アルゴリズムとは？」「なぜアルゴリズムの理解が必要なのか」。
+  \item 第２章：「アルゴリズム解析の概要」ソーティング問題を例にあげ、
+  その問題を解くアルゴリズムに「Insertion sort - 挿入ソート」と
+  「Merge sort - マージソート」をあげます。
+  \item 第３章：いわゆる「オーダーノーテーション」、「ビッグオー」など聞いたことがある
+  方もいらっしゃると思いますが、その直感とちゃんとした定義について話します。
+}
+
+\section*{第１章：計算におけるアルゴリズムの役割}
+
+\begin{frame}
+  \sectionpage
+\end{frame}
+
+\begin{frame}{アルゴリズムとは？}
   \begin{itemize}
     \item 明確に定義された手続き
     \item 値または値の集合を\textbf{入力}として取る
@@ -54,7 +86,16 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{アルゴリズムとは}
+\note[itemize]{
+  \item 基本的な操作の組み合わせだけで書かれた、間違いようのない手続きです。
+  \item 計算機はバカだから、基本的な操作しか理解できず、明確に書かなければなりません。
+  \item アルゴリズムには入力があって、入力に対して出力を生成する。
+  \item 数学の関数のイメージをしてもいいと思いますが、乱択アルゴリズムになるとややこし
+  いです。それでも結局乱択アルゴリズムは多くの場合擬似乱数発生器の疑似乱数を使うので、
+  そのシードも入力の一部として考えてもいいです。
+}
+
+\begin{frame}{アルゴリズムとは？}{何に使われている？}
   \begin{itemize}
     \item \textbf{計算問題}を解く道具として
     \item \textbf{正当な}アルゴリズム
@@ -66,19 +107,39 @@
   \end{itemize}
 \end{frame}
 
+\note[itemize]{
+  \item 何に使われているか？
+  \item 計算問題とは、ある入力に対してどのような出力が欲しいかを指定する問題です。
+  \item アルゴリズムはそれを実現させる道具。
+  \item ある計算問題に対して正当なアルゴリズムは、すべての問題のインスタンスに対して、
+  常に停止して、出力が正しい。
+  \item 「常に停止する」の必要性は、無限時間計算したら正解を出せる手続きもある。
+  イメージとしては極限の収束など。
+}
+
 \begin{frame}{ソーティング問題}
-  \textbf{入力}：$n$個の数の列$\left\langle a_1, a_2, \ldots, a_n\right\rangle$
+  \begin{description}
+  \item[入力] $n$個の数の列$\left\langle a_1, a_2, \ldots, a_n\right\rangle$
 
-  \textbf{出力}：$a_1'\leq a_2'\leq \ldots\leq a_n'$を満たす入力列の置換（並べ換え）
+  \item[出力] $a_1'\leq a_2'\leq \ldots\leq a_n'$を満たす入力列の置換（並べ換え）
   $\left\langle a_1', a_2', \ldots, a_n'\right\rangle$
+  \end{description}
+  
+  \vspace{5mm}
 
-  \textbf{問題のインスタンス}の例：
+  \begin{description}
+  \item[問題のインスタンスの例]
   $\left\langle 31, 41, 59, 26, 41, 58\right\rangle$
 
-  \textbf{正しい出力}：$\left\langle 26, 31, 41, 41, 58, 59\right\rangle$
+  \item[正しい出力] $\left\langle 26, 31, 41, 41, 58, 59\right\rangle$
+  \end{description}
 \end{frame}
 
-\begin{frame}{実行時間の比較}
+\note[itemize]{
+  \item 計算問題は一般的にかかれているのに対して、問題のインスタンスとは一つの具体例
+}
+
+\begin{frame}{章末問題 1-1 -- 実行時間の比較}{なぜアルゴリズムの理解が必要なのか？}
   各関数$f(n)$と時間$t$に対して、アルゴリズムが問題を解くのに$f(n)$マイクロ秒かかる
   とき、$t$時間で解くことができる最大の問題サイズ$n$を求めよ。
 
@@ -99,7 +160,16 @@
   \end{center}
 \end{frame}
 
-\begin{frame}{実行時間の比較}
+\note[itemize]{
+  \item なぜアルゴリズムの理解が必要なのか？という問いに対するいい演習はこの問題です
+  \item 要するに、あるアルゴリズムが与えられたとき、そのアルゴリズムの効率はどれぐらい
+  実行時間に影響するか。
+  \item たとえば１分待てる場合、そのアルゴリズムはどれぐらい大きい入力に対して出力でき
+  るか
+  \item これは理論上、実際の計算機だと他の要因もあるが
+}
+
+\begin{frame}{章末問題 1-1 -- 実行時間の比較}{なぜアルゴリズムの理解が必要なのか？}
   各関数$f(n)$と時間$t$に対して、アルゴリズムが問題を解くのに$f(n)$マイクロ秒かかる
   とき、$t$時間で解くことができる最大の問題サイズ$n$を求めよ。
 
@@ -126,6 +196,36 @@
       \hline
     \end{tabular}
   \end{center}}
+\end{frame}
+
+\section*{第２章：さあ、始めよう}
+
+\begin{frame}
+  \sectionpage
+\end{frame}
+
+\begin{frame}{挿入ソート}{直感}
+  \begin{itemize}
+    \item 少数の要素を効率よくソートする
+    \item 手札のトランプカードをソートするイメージ
+    \item 手続き
+    \begin{itemize}
+      \item 左手を空にし、テーブルの上にカードを裏向きに置く
+      \item テーブルから１枚ずつカードを取って、左手の正しい位置に\textbf{挿入}していく
+      \item 正しい位置を探すのに、手札の右側から順に比較していく
+    \end{itemize}
+    \item どの時点でも左手の手札はソート済み
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{挿入ソート}{擬似コード}
+  INSERTION-SORT(A)
+  \begin{algorithmic}[1]
+    \For{$j = 2$ to $A.length$}
+      \State $key = A[j]$
+      \State // asdf
+    \EndFor
+  \end{algorithmic}
 \end{frame}
 
 \end{document}

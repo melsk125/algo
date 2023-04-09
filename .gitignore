@@ -31,4 +31,5 @@ user.bazelrc
 /slides/*.pdf
 /slides/*.snm
 /slides/*.toc
+/slides/*.vrb
 
