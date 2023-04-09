@@ -1,0 +1,131 @@
+% LuaLaTeX文書; 文字コードはUTF-8
+\documentclass[unicode,12pt,aspectratio=169]{beamer} % 'unicode'が必要
+\usepackage{luatexja} % 日本語したい
+% \usepackage[ipaex]{luatexja-preset} % IPAexフォントしたい
+% \renewcommand{\kanjifamilydefault}{\gtdefault} % 既定をゴシック体に
+
+
+\usepackage{geometry}
+\usepackage{pxrubrica}
+\usepackage{import}
+
+% あとは欧文の場合と同じ
+\usetheme{boxes}
+
+\title{精読『アルゴリズムイントロダクション 第4版』}
+\subtitle{第１回}
+\author{Panot}
+\date{最終更新：\today}
+
+\begin{document}
+
+\begin{frame}
+ \titlepage{}
+\end{frame}
+
+\begin{frame}{今日の範囲}
+  第１章：計算におけるアルゴリズムの役割
+  第２章：さあ、始めよう
+  第３章：実行時間の特徴づけ
+\end{frame}
+
+\begin{frame}{今日の内容}
+  \begin{itemize}
+    \item アルゴリズムとは？
+    \item なぜアルゴリズムの研究が必要なのか？
+    \item アルゴリズム解析
+      \begin{itemize}
+        \item 挿入ソート
+        \item マージソート
+      \end{itemize}
+    \item 「オーダーノーテーション」
+      \begin{itemize}
+        \item 直感
+        \item 定義
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{アルゴリズムとは}
+  \begin{itemize}
+    \item 明確に定義された手続き
+    \item 値または値の集合を\textbf{入力}として取る
+    \item ある値または値の集合を\textbf{出力}して生成する
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{アルゴリズムとは}
+  \begin{itemize}
+    \item \textbf{計算問題}を解く道具として
+    \item \textbf{正当な}アルゴリズム
+    \item すべての\textbf{問題のインスタンス}に対して
+    \begin{itemize}
+      \item 常に\textbf{停止}する
+      \item 出力が\textbf{正しい}
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{ソーティング問題}
+  \textbf{入力}：$n$個の数の列$\left\langle a_1, a_2, \ldots, a_n\right\rangle$
+
+  \textbf{出力}：$a_1'\leq a_2'\leq \ldots\leq a_n'$を満たす入力列の置換（並べ換え）
+  $\left\langle a_1', a_2', \ldots, a_n'\right\rangle$
+
+  \textbf{問題のインスタンス}の例：
+  $\left\langle 31, 41, 59, 26, 41, 58\right\rangle$
+
+  \textbf{正しい出力}：$\left\langle 26, 31, 41, 41, 58, 59\right\rangle$
+\end{frame}
+
+\begin{frame}{実行時間の比較}
+  各関数$f(n)$と時間$t$に対して、アルゴリズムが問題を解くのに$f(n)$マイクロ秒かかる
+  とき、$t$時間で解くことができる最大の問題サイズ$n$を求めよ。
+
+  \begin{center}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+      \hline
+      & 1秒 & 1分 & 1時間 & 1日 & 1ヶ月 & 1年 & 1世紀 \\ \hline
+      $\lg n$ & & & & & & & \\ \hline
+      $\sqrt{n}$ & & & & & & & \\ \hline
+      $n$ & & & & & & & \\ \hline
+      $n\lg n$ & & & & & & & \\ \hline
+      $n^2$ & & & & & & & \\ \hline
+      $n^3$ & & & & & & & \\ \hline
+      $2^n$ & & & & & & & \\ \hline
+      $n!$ & & & & & & & \\
+      \hline
+    \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}{実行時間の比較}
+  各関数$f(n)$と時間$t$に対して、アルゴリズムが問題を解くのに$f(n)$マイクロ秒かかる
+  とき、$t$時間で解くことができる最大の問題サイズ$n$を求めよ。
+
+  {\scriptsize \begin{center}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+      \hline
+      & 1秒 & 1分 & 1時間 & 1日 & 1ヶ月 & 1年 & 1世紀 \\ \hline
+      $\lg n$ & $10^{301}$ & $10^{18061}$ & $10^{1083707}$ & $10^{26008991}$ &
+        $10^{78 0269748}$ & $10^{9363236985}$ & $10^{936323698513}$ \\ \hline
+      $\sqrt{n}$ & $10^6$ & $3.6\times 10^9$ & $1.30 \times 10^{13}$ &
+        $7.46 \times 10^{15}$ & $6.72 \times 10^{18}$ & $9.67 \times 10^{20}$ &
+        $9.67 \times 10^{22}$ \\ \hline
+      $n$ & $10^3$ & $6 \times 10^4$ & $3.6 \times 10^6$ & $8.64 \times 10^7$ &
+        $2.59 \times 10^9$ & $3.11 \times 10^{10}$ & $3.11 \times 10^{12}$
+        \\ \hline
+      $n\lg n$ & $140$ & $4895$ & $204094$ & $3.94 \times 10^6$ &
+        $9.77 \times 10^7$ & $1.04 \times 10^9$ & $8.56 \times 10^{10}$
+        \\ \hline
+      $n^2$ & $31$ & $244$ & $1897$ & $9295$ & $50911$ & $176363$ &
+        $1.76 \times 10^6$ \\ \hline
+      $n^3$ & $10$ & $39$ & $153$ & $442$ & $1373$ & $3144$ & $14597$ \\ \hline
+      $2^n$ & $9$ & $15$ & $21$ & $26$ & $31$ & $34$ & $41$ \\ \hline
+      $n!$ & $6$ & $8$ & $9$ & $11$ & $12$ & $13$ & $15$ \\
+      \hline
+    \end{tabular}
+  \end{center}}
+\end{frame}
+
+\end{document}
