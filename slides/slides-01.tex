@@ -1,11 +1,7 @@
 % LuaLaTeX文書; 文字コードはUTF-8
 \documentclass[unicode,12pt,aspectratio=169,notes]{beamer} % 'unicode'が必要
 \usepackage{luatexja} % 日本語したい
-
-\usepackage{algpseudocode} % 擬似コード
 \usepackage{geometry}
-\usepackage{pxrubrica}
-\usepackage{import}
 
 \usetheme{boxes}
 
@@ -55,7 +51,7 @@
         \item 挿入ソート
         \item マージソート
       \end{itemize}
-    \item 「オーダーノーテーション」
+    \item 「オーダ」
       \begin{itemize}
         \item 直感
         \item 定義
@@ -68,7 +64,7 @@
   \item 第２章：「アルゴリズム解析の概要」ソーティング問題を例にあげ、
   その問題を解くアルゴリズムに「Insertion sort - 挿入ソート」と
   「Merge sort - マージソート」をあげます。
-  \item 第３章：いわゆる「オーダーノーテーション」、「ビッグオー」など聞いたことがある
+  \item 第３章：いわゆる「関数のオーダ」、「ビッグオー」など聞いたことがある
   方もいらっしゃると思いますが、その直感とちゃんとした定義について話します。
 }
 
@@ -218,14 +214,297 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{挿入ソート}{擬似コード}
-  INSERTION-SORT(A)
-  \begin{algorithmic}[1]
-    \For{$j = 2$ to $A.length$}
-      \State $key = A[j]$
-      \State // asdf
-    \EndFor
-  \end{algorithmic}
+\begin{frame}[fragile]{挿入ソート}{擬似コード}
+  INSERTION-SORT(A, n)
+  \begin{semiverbatim}
+1  for i = 2 to n
+2    key = A[i]
+3    // A[i] をソート済みの列 A[1:i-1] に挿入する
+4    j = i - 1
+5    while j > 0 かつ A[j] > key
+6      A[j + 1] = A[j]
+7      j = j - 1
+8    A[j + 1] = key
+  \end{semiverbatim}
 \end{frame}
+
+\note[itemize]{
+  \item この教科書は「1-オリジン」
+  \item sort-in-place: その場でソート：入力の配列がソートされ、新しい配列ができない
+  \item 1: $i$ は今配列のどの番号を挿入しようとしているか。$[1:i-1]$はソート済み
+  \item 2: $key$ は今挿入しようとしている「キー」
+  \item 4: $j$ は挿入する場所を探すインデックス
+  \item 5: $j$ を $[1:i-1]$ 内で右から左まで挿入する場所を探す
+  \item 6: 挿入する場所ではないとき、配列内容をずらす
+  \item 7: $j$ を左に移す
+  \item 8: while ロープが終わったのは挿入する場所を見つけたこと、キーを挿入する
+}
+
+\begin{frame}[fragile]{挿入ソート}{実行例}
+  INSERTION-SORT(A, n)
+  \begin{semiverbatim}
+1  for i = 2 to n
+2    key = A[i]
+3    // A[i] をソート済みの列 A[1:i-1] に挿入する
+4    j = i - 1
+5    while j > 0 かつ A[j] > key
+6      A[j + 1] = A[j]
+7      j = j - 1
+8    A[j + 1] = key
+  \end{semiverbatim}
+  入力：$A = [5, 2, 4, 6], n = 4$
+\end{frame}
+
+\begin{frame}[fragile]{挿入ソート}{実行例}
+  INSERTION-SORT(A, n)
+  \begin{semiverbatim}
+1  for i = 2 to n
+2    key = A[i]
+3    // A[i] をソート済みの列 A[1:i-1] に挿入する
+4    j = i - 1
+5    \alert{while j > 0 かつ A[j] > key}
+6      A[j + 1] = A[j]
+7      j = j - 1
+8    A[j + 1] = key
+  \end{semiverbatim}
+  状態：$A = [5, 2, 4, 6], i = 2, key = 2, j = 1$ while 条件が満たされる
+\end{frame}
+
+\begin{frame}[fragile]{挿入ソート}{実行例}
+  INSERTION-SORT(A, n)
+  \begin{semiverbatim}
+1  for i = 2 to n
+2    key = A[i]
+3    // A[i] をソート済みの列 A[1:i-1] に挿入する
+4    j = i - 1
+5    \alert{while j > 0 かつ A[j] > key}
+6      A[j + 1] = A[j]
+7      j = j - 1
+8    A[j + 1] = key
+  \end{semiverbatim}
+  状態：$A = [5, 5, 4, 6], i = 2, key = 2, j = 0$ while 条件が満たされず
+\end{frame}
+
+\begin{frame}[fragile]{挿入ソート}{実行例}
+  INSERTION-SORT(A, n)
+  \begin{semiverbatim}
+1  for i = 2 to n
+2    key = A[i]
+3    // A[i] をソート済みの列 A[1:i-1] に挿入する
+4    j = i - 1
+5    while j > 0 かつ A[j] > key
+6      A[j + 1] = A[j]
+7      j = j - 1
+8    \alert{A[j + 1] = key}
+  \end{semiverbatim}
+  状態：$A = [2, 5, 4, 6], i = 2, key = 2, j = 0$
+\end{frame}
+
+\begin{frame}[fragile]{挿入ソート}{実行例}
+  INSERTION-SORT(A, n)
+  \begin{semiverbatim}
+1  for i = 2 to n
+2    key = A[i]
+3    // A[i] をソート済みの列 A[1:i-1] に挿入する
+4    j = i - 1
+5    \alert{while j > 0 かつ A[j] > key}
+6      A[j + 1] = A[j]
+7      j = j - 1
+8    A[j + 1] = key
+  \end{semiverbatim}
+  状態：$A = [2, 5, 4, 6], i = 3, key = 4, j = 2$ while 条件が満たされる
+\end{frame}
+
+\begin{frame}[fragile]{挿入ソート}{実行例}
+  INSERTION-SORT(A, n)
+  \begin{semiverbatim}
+1  for i = 2 to n
+2    key = A[i]
+3    // A[i] をソート済みの列 A[1:i-1] に挿入する
+4    j = i - 1
+5    \alert{while j > 0 かつ A[j] > key}
+6      A[j + 1] = A[j]
+7      j = j - 1
+8    A[j + 1] = key
+  \end{semiverbatim}
+  状態：$A = [2, 5, 5, 6], i = 3, key = 4, j = 1$ while 条件が満たされず
+\end{frame}
+
+\begin{frame}[fragile]{挿入ソート}{実行例}
+  INSERTION-SORT(A, n)
+  \begin{semiverbatim}
+1  for i = 2 to n
+2    key = A[i]
+3    // A[i] をソート済みの列 A[1:i-1] に挿入する
+4    j = i - 1
+5    while j > 0 かつ A[j] > key
+6      A[j + 1] = A[j]
+7      j = j - 1
+8    \alert{A[j + 1] = key}
+  \end{semiverbatim}
+  状態：$A = [2, 4, 5, 6], i = 3, key = 4, j = 1$
+\end{frame}
+
+\begin{frame}[fragile]{挿入ソート}{実行例}
+  INSERTION-SORT(A, n)
+  \begin{semiverbatim}
+1  for i = 2 to n
+2    key = A[i]
+3    // A[i] をソート済みの列 A[1:i-1] に挿入する
+4    j = i - 1
+5    \alert{while j > 0 かつ A[j] > key}
+6      A[j + 1] = A[j]
+7      j = j - 1
+8    A[j + 1] = key
+  \end{semiverbatim}
+  状態：$A = [2, 4, 5, 6], i = 4, key = 6, j = 3$ while 条件が満たされず
+\end{frame}
+
+\begin{frame}{ループ不変式}{定義}
+  \textbf{loop invariant -- ループ不変式} は反復ごとに変わらない性質のこと。
+  アルゴリズム、特にループの正当性を解析するのに役に立つ。
+
+  \vspace{5mm}
+
+  \textbf{挿入ソートのループ不変式}：
+  $A[i:i-1]$は元々$A[i:i-1]$にある要素であり、ソート済みである
+\end{frame}
+
+\begin{frame}{ループ不変式}{条件}
+  \begin{description}
+    \item[初期条件] ループの実行開始直前ではループ不変式は真である。
+    \item[ループ内条件] ループ反復の実行開始直前ではループ不変式が真ならば、
+    次のループ反復の実行開始直前でも真である。
+    \item[終了条件] ループが停止する。停止したとき、アルゴリズムの正当性の証明に繋がる
+    有力な性質がループ不変式とループ停止理由から得られる。
+  \end{description}
+\end{frame}
+
+\note[itemize]{
+  \item 数学的帰納法っぽさがある。
+}
+
+\begin{frame}{アルゴリズムの解析}
+  \begin{itemize}
+    \item アルゴリズムが必要とする\textbf{リソースを予測}する。
+    \item リソース：\textbf{実行時間}、メモリ、通信バンド幅、エネルギー
+    \item ランダムアクセスマシン（RAM）
+    \begin{itemize}
+      \item 単一プロセッサ
+      \item 命令実行時間一定
+      \item メモリアクセス時間一定
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{アルゴリズムの解析}{挿入ソートの例}
+  \begin{itemize}
+    \item 入力の大きさ：配列の長さ
+    \item 解析するリソース：実行時間 $T(n)$
+    \item $k$行目の１回実行時間を$c_k$とする。
+    \item 回数を計算して、総合実行時間を計算する。
+    \item while ループの実行回数は挿入する場所によるため、各 for ループの反復によって
+    異なる。そのため、各 for ループ反復の $i$ に対して、while ループの実行回数を $t_i$
+    とする。
+  \end{itemize}
+\end{frame}
+
+\note[itemize]{
+  \item 実行時間は入力の長さに依存している。
+  \item 実行例を想像してみてください：挿入したい場所を右から順番に探します。見つかったら
+  挿入して while ループから出ます。
+  \item なので、挿入場所の発見が早い、つまり元々正しい場所にある場合は while ループがす
+  ぐ終わるし、
+  \item 挿入場所の発見が遅い、つまり一番左まで探さなければならない、つまり元々は逆順に配
+  列されていたら while ループが長いです。
+}
+
+\begin{frame}[fragile]{挿入ソート}{実行時間解析}
+  INSERTION-SORT(A, n)
+
+  \begin{tabular}{rlll}
+    & & コスト & 実行回数 \\
+    1 & \verb|for i = 2 to n| & $c_1$ & $n$ \\
+    2 & \verb|  key = A[i]| & $c_2$ & $n-1$ \\
+    3 & \verb|  // コメント| & $0$ & $n-1$ \\
+    4 & \verb|  j = i - 1| & $c_4$ & $n-1$ \\
+    5 & \verb|  while j > 0 かつ A[j] > key| & $c_5$ & $\sum_{i=2}^nt_i$ \\
+    6 & \verb|    A[j + 1] = A[j]| & $c_6$ & $\sum_{i=2}^n\left(t_i-1\right)$ \\
+    7 & \verb|    j = j - 1| & $c_7$ & $\sum_{i=2}^n\left(t_i-1\right)$ \\
+    8 & \verb|  A[j + 1] = key| & $c_8$ & $n-1$
+  \end{tabular}
+  \[
+    T(n) = c_1n + \left(c_2+c_4+c_8\right)\left(n-1\right) + c_5\sum_{i=2}^nt_i
+    + \left(c_6+c_7\right)\sum_{i=2}^n\left(t_i-1\right)
+  \]
+\end{frame}
+
+\begin{frame}{挿入ソート}{実行時間解析}
+  最良の場合：元々整列されている $ t_i = 1 $
+  \begin{align*}
+    T(n) &= c_1n + \left(c_2+c_4+c_8\right)\left(n-1\right)
+                 + c_5\left(n-1\right) \\
+         &= \left(c_1+c_2+c_4+c_5+c_8\right)n - \left(c_2+c_4+c_5+c_8\right) \\
+         &= an + b
+  \end{align*}
+  実行時間は入力の大きさの線形関数である。
+\end{frame}
+
+\begin{frame}{挿入ソート}{実行時間解析}
+  最悪の場合：元々は逆順に整列されている $ t_i = i $
+  \begin{align*}
+    T(n) &= &&c_1n + \left(c_2+c_4+c_8\right)\left(n-1\right)
+                 + c_5\left(\frac{n(n+1)}{2}-1\right)
+                 + \left(c_6+c_7\right)\left(\frac{n(n-1)}{2}\right) \\
+         &= &&\left(\frac{c_5}{2}+\frac{c_6}{2}+\frac{c_7}{2}\right)n^2
+            + \left(c_1+c_2+c_4+\frac{c_5}{2}-\frac{c_6}{2}-\frac{c_7}{2}+c_8\right)n \\
+         &  &&- \left(c_2+c_4+c_5+c_8\right) \\
+         &= &&an^2 + bn + c
+  \end{align*}
+  実行時間は入力の大きさの線形関数である。
+\end{frame}
+
+\begin{frame}{最悪時の解析}
+  \begin{itemize}
+    \item 通常は\textbf{最悪時}の解析を行う
+    \item 乱択アルゴリズムなどは\textbf{平均時}の解析を行う
+  \end{itemize}
+\end{frame}
+
+\note[itemize]{
+  \item 最悪時の理由は、解析結果は上界となる、アルゴリズムによって再悪事がよく出る、
+  平均時も最悪時と変わらないことが多い。
+}
+
+\begin{frame}{「オーダ」}
+  \begin{itemize}
+    \item 実行時間は、入力の大きさ $n$ に関する項の和のとき、一番増加オーダが高いもの
+    で特徴づけられる。
+    \item $T(n) = 148n^2 + 4n\lg n + 43\sqrt{n} + 345$ を $T(n) = \Theta(n^2)$ と
+    特徴づけられる。
+  \end{itemize}
+\end{frame}
+
+\note[itemize]{
+  \item オーダ n 二乗
+  \item これは「ビッグ・オー」じゃなくて、「ビッグ・シータ」
+  \item オーダ記法はいくつかあって（この教科書では５つ紹介）、それぞれ定義があって、
+  第３章で紹介する。
+  \item それまでインフォーマルに使っている。
+}
+
+\begin{frame}{「オーダ」}
+  \begin{itemize}
+    \item<1-> $T_1(n) = n^2$ と $T_2(n) = 1000n\lg n$ を比べよう。
+    \item<2-> $T_1$ は絶対の $T_2$ を追い越す。具体的にこの場合 13746 で追い越す。
+  \end{itemize}
+\end{frame}
+
+\note[itemize]{
+  \item なぜ最大項だけを気にするのか？
+  \item 両方とも極限をとれば無限大に増加するが、最大項はいくら係数が小さくても、必ず他
+  の項を追い越す。
+  \item もちろん、係数を小さくする努力もすべきだが、オーダを小さくする努力のほうが勝る
+}
 
 \end{document}
