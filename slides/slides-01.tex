@@ -2,6 +2,7 @@
 \documentclass[unicode,12pt,aspectratio=169,notes]{beamer} % 'unicode'が必要
 \usepackage{luatexja} % 日本語したい
 \usepackage{geometry}
+\usepackage{tikz}
 
 \usetheme{boxes}
 
@@ -496,7 +497,7 @@
 \begin{frame}{「オーダ」}
   \begin{itemize}
     \item<1-> $T_1(n) = n^2$ と $T_2(n) = 1000n\lg n$ を比べよう。
-    \item<2-> $T_1$ は絶対の $T_2$ を追い越す。具体的にこの場合 13746 で追い越す。
+    \item<2-> $T_1$ はいずれ $T_2$ を追い越す。具体的にこの場合 13746 で追い越す。
   \end{itemize}
 \end{frame}
 
@@ -506,5 +507,103 @@
   の項を追い越す。
   \item もちろん、係数を小さくする努力もすべきだが、オーダを小さくする努力のほうが勝る
 }
+
+\begin{frame}{分割統治法}
+  \begin{itemize}
+    \item 挿入ソート：逐次添加法（incremental）
+    \item マージソート：分割統治法（divide-and-conquer）
+  \end{itemize}
+  \begin{description}
+    \item[分割] 問題をいくつかの同じ問題のより小さいインスタンスである部分問題に分割。
+    \item[統治] 部分問題を再帰的に解く。ただし、部分問題のサイズが十分小さいときは
+    直接的な方法で解く。
+    \item[統合] 部分問題の解を組み合わせて元の問題の解を得る。
+  \end{description}
+\end{frame}
+
+\note[itemize]{
+  \item 逐次添加法は１個ずつ見る
+  \item 分割統治法は小さい問題に分割して、解決して、統合する
+  \item ポイントは「同じ問題のより小さいインスタンス」と「サイズが十分小さいときは直接
+  的な方法で解く」ところ
+}
+
+\begin{frame}{マージソート}
+  \begin{description}
+    \item[分割] ソートすべき長さ $n$ の列を $n/2$ の部分列に分割する。
+    \item[統治] マージソートを用いて２つの部分列を再帰的にソートする。
+    \item[統合] ２つのソートされた部分列をマージしてソートされた解を作る。
+  \end{description}
+\end{frame}
+
+\note[itemize]{
+  \item このアルゴリズムのキモは\textbf{統合}の部分にある。
+}
+\begin{frame}{マージソート}
+  \textbf{マージの直感}：ソート済みの２つの部分列の先頭を比べつつ、小さい方を順に元の列
+  の解を作っていく。
+\end{frame}
+
+\begin{frame}{マージソート}
+  \begin{figure}
+    \begin{tikzpicture}
+      % array A
+      \fill[blue!20!white] (0.8,1.6) rectangle (4.0,2.0);
+      \draw (0.4,2.0) -- (4.4,2.0);
+      \draw (0.4,1.6) -- (4.4,1.6);
+      \foreach \x in {2, 3, 4, 5, 6, 7, 8, 9, 10}
+        \draw (\x * 0.4, 1.6) -- (\x * 0.4, 2.0);
+      % index texts
+      \foreach \x in {8, 9, 10, 11, 12, 13, 14, 15, 16, 17}
+        \draw (\x*0.4 - 2.6, 2.0) node[anchor=south] {\scriptsize $\x$};
+      \draw (0.4,1.8) node[anchor=east] {\scriptsize $A$};
+      \draw (0.6,1.8) node {\scriptsize $\ldots$};
+      \draw (4.2,1.8) node {\scriptsize $\ldots$};
+      \draw (1.0,1.6) node[anchor=north] {\scriptsize $k$};
+      % array contents
+      \draw (1.0,1.8) node {\scriptsize $2$};
+      \draw (1.4,1.8) node {\scriptsize $4$};
+      \draw (1.8,1.8) node {\scriptsize $6$};
+      \draw (2.2,1.8) node {\scriptsize $7$};
+      \draw (2.6,1.8) node {\scriptsize $1$};
+      \draw (3.0,1.8) node {\scriptsize $2$};
+      \draw (3.4,1.8) node {\scriptsize $3$};
+      \draw (3.8,1.8) node {\scriptsize $5$};
+
+      % array L
+      \fill[brown!20!white] (0.4,0.4) rectangle (2.0,0.8);
+      \draw (0.4,0.4) -- (0.4,0.8) -- (2.0,0.8) -- (2.0,0.4) -- (0.4,0.4);
+      \foreach \x in {2, 3, 4}
+        \draw (\x * 0.4, 0.4) -- (\x * 0.4, 0.8);
+      % index texts
+      \foreach \x in {0, 1, 2, 3}
+        \draw (\x*0.4 + 0.6, 0.8) node[anchor=south] {\scriptsize $\x$};
+      \draw (0.4,0.6) node[anchor=east] {\scriptsize $L$};
+      \draw (0.6,0.4) node[anchor=north] {\scriptsize $i$};
+      % array contents
+      \draw (0.6,0.6) node {\scriptsize $2$};
+      \draw (1.0,0.6) node {\scriptsize $4$};
+      \draw (1.4,0.6) node {\scriptsize $6$};
+      \draw (1.8,0.6) node {\scriptsize $7$};
+
+      % array R
+      \fill[brown!20!white] (2.8,0.4) rectangle (4.4,0.8);
+      \draw (2.8,0.4) -- (2.8,0.8) -- (4.4,0.8) -- (4.4,0.4) -- (2.8,0.4);
+      \foreach \x in {8, 9, 10}
+        \draw (\x * 0.4, 0.4) -- (\x * 0.4, 0.8);
+      % index texts
+      \foreach \x in {0, 1, 2, 3}
+        \draw (\x*0.4 + 3.0, 0.8) node[anchor=south] {\scriptsize $\x$};
+      \draw (2.8,0.6) node[anchor=east] {\scriptsize $R$};
+      \draw (3.0,0.4) node[anchor=north] {\scriptsize $j$};
+      % array contents
+      \draw (3.0,0.6) node {\scriptsize $1$};
+      \draw (3.4,0.6) node {\scriptsize $2$};
+      \draw (3.8,0.6) node {\scriptsize $3$};
+      \draw (4.2,0.6) node {\scriptsize $5$};
+    \end{tikzpicture}
+    \caption{a}
+  \end{figure}
+\end{frame}
 
 \end{document}
