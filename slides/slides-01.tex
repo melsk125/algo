@@ -715,4 +715,88 @@
   \end{figure}
 \end{frame}
 
+\section*{第３章：実行時間の特徴づけ}
+
+\begin{frame}
+  \sectionpage
+\end{frame}
+
+\begin{frame}{漸近記法}{直感}
+  \begin{itemize}
+    \item 無限大に増加する関数の、増加の「速度」を測りたい。
+    \item 関数 $F(n)$ が $n$ に関する項の和のとき、一番増加オーダが高いもので特徴づけ
+    られる。
+    \item 例：$F(n) = 7n^3 + 100n^2 - 20n + 6$ が $n^3$ で特徴づけられる。
+    \item $F(n)$ は漸近的に $n^3$ の比例に増加する。
+    \item $F(n)$ は漸近的に $n^4$ より増加が遅い。
+    \item $F(n)$ は漸近的に $n^2$ より増加が速い。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{漸近記法}{直感}
+  \begin{itemize}
+    \item 例：$F(n) = 7n^3 + 100n^2 - 20n + 6$
+    \item \textbf{$O$ 記法}は増加速度の\textbf{上界}を表現する。\\
+    $F(n)$ の増加速度は $n^3$ や $n^4$ の増加速度より速くないため、
+    $F(n)$ は $O(n^3)$ であり $O(n^4)$ である。
+    \item \textbf{$\Theta$ 記法}は増加速度の\textbf{タイトな限界}を表現する。\\
+    $F(n)$ の増加速度は $n^3$ の増加速度と漸近的に比例しているため、
+    $F(n)$ は $\Theta(n^3)$ である。
+    \item \textbf{$\Omega$ 記法}は増加速度の\textbf{下界}を表現する。\\
+    $F(n)$ の増加速度は $n^3$ や $n^2$ の増加速度より遅くないため、
+    $F(n)$ は $\Omega(n^3)$ であり $\Omega(n^2)$ である。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{漸近記法}{定義}
+  \begin{definition}[$O$記法 -- 漸近的上界]
+    任意な関数 $g(n)$ に対して、関数の集合 $O(g(n))$ はこのように定義する：
+    \begin{align*}
+      O(g(n)) = \{
+        f(n) : & \text{ ある正の定数 } c, n_0 \text{ が存在して、すべての }
+        n \geq n_0 \text{ に対して } \\
+        & 0 \leq f(n) \leq cg(n)
+      \}
+    \end{align*}
+  \end{definition}
+  
+  $f(n) \in O(g(n))$ を表したいとき、 $f(n) = O(g(n))$ と書いてもよいとする。
+\end{frame}
+
+\begin{frame}{漸近記法}{定義}
+  \begin{definition}[$\Omega$記法 -- 漸近的下界]
+    任意な関数 $g(n)$ に対して、関数の集合 $\Omega(g(n))$ はこのように定義する：
+    \begin{align*}
+      \Omega(g(n)) = \{
+        f(n) : & \text{ ある正の定数 } c, n_0 \text{ が存在して、すべての }
+        n \geq n_0 \text{ に対して } \\
+        & 0 \leq cg(n) \leq f(n)
+      \}
+    \end{align*}
+  \end{definition}
+  
+  $f(n) \in \Omega(g(n))$ を表したいとき、 $f(n) = \Omega(g(n))$ と書いてもよいとする。
+\end{frame}
+
+\begin{frame}{漸近記法}{定義}
+  \begin{definition}[$\Theta$記法 -- 漸近的にタイトな限界]
+    任意な関数 $g(n)$ に対して、関数の集合 $\Theta(g(n))$ はこのように定義する：
+    \begin{align*}
+      \Theta(g(n)) = \{
+        f(n) : & \text{ ある正の定数 } c_1, c_2, n_0 \text{ が存在して、すべての }
+        n \geq n_0 \text{ に対して } \\
+        & 0 \leq c_1g(n) \leq f(n) \leq c_2g(n)
+      \}
+    \end{align*}
+  \end{definition}
+  
+  $f(n) \in \Theta(g(n))$ を表したいとき、 $f(n) = \Theta(g(n))$ と書いてもよいとする。
+\end{frame}
+
+\begin{frame}{漸近記法}
+  \begin{figure}
+    \includegraphics[width=0.95\textwidth]{resources/fig03.02}
+  \end{figure}
+\end{frame}
+
 \end{document}
