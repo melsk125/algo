@@ -7,6 +7,8 @@ namespace cc {
 
 void InsertionSort(std::vector<int>& input);
 
+void MergeSort(std::vector<int>& input);
+
 }  // namespace cc
 
 #endif

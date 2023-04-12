@@ -17,7 +17,7 @@ struct SortInstance {
 };
 
 const std::vector<std::function<void(std::vector<int>&)>> SORT_FUNCTIONS =
-    {cc::InsertionSort};
+    {cc::InsertionSort, cc::MergeSort};
 
 std::string PrintVector(const std::vector<int>& input) {
   return absl::StrCat("{", absl::StrJoin(input, ","), "}");
