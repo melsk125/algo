@@ -1,0 +1,61 @@
+\def\mergefigure#1#2#3{
+\begin{tikzpicture}
+  % array A
+  \fill[blue!20!white] (0.8,1.6) rectangle (4.0,2.0);
+  \fill[brown!20!white] (0.8,1.6) rectangle (#1 * 0.4 + 0.4, 2.0);
+  \draw (0.4,2.0) -- (4.4,2.0);
+  \draw (0.4,1.6) -- (4.4,1.6);
+  \foreach \x in {2, 3, 4, 5, 6, 7, 8, 9, 10}
+    \draw (\x * 0.4, 1.6) -- (\x * 0.4, 2.0);
+  % index texts
+  \foreach \x in {8, 9, 10, 11, 12, 13, 14, 15, 16, 17}
+    \draw (\x*0.4 - 2.6, 2.0) node[anchor=south] {\scriptsize $\x$};
+  \draw (0.4,1.8) node[anchor=east] {\scriptsize $A$};
+  \draw (0.6,1.8) node {\scriptsize $\ldots$};
+  \draw (4.2,1.8) node {\scriptsize $\ldots$};
+  \draw (#1 * 0.4 + 0.6,1.6) node[anchor=north] {\scriptsize $k$};
+  % array contents
+  \draw (1.0,1.8) node {\scriptsize \ifnum #1<2 $2$ \else $1$ \fi};
+  \draw (1.4,1.8) node {\scriptsize \ifnum #1<3 $4$ \else $2$ \fi};
+  \draw (1.8,1.8) node {\scriptsize \ifnum #1<4 $6$ \else $2$ \fi};
+  \draw (2.2,1.8) node {\scriptsize \ifnum #1<5 $7$ \else $3$ \fi};
+  \draw (2.6,1.8) node {\scriptsize \ifnum #1<6 $1$ \else $4$ \fi};
+  \draw (3.0,1.8) node {\scriptsize \ifnum #1<7 $2$ \else $5$ \fi};
+  \draw (3.4,1.8) node {\scriptsize \ifnum #1<8 $3$ \else $6$ \fi};
+  \draw (3.8,1.8) node {\scriptsize \ifnum #1<9 $5$ \else $7$ \fi};
+
+  % array L
+  \fill[brown!20!white] (0.4,0.4) rectangle (2.0,0.8);
+  \fill[brown!60!white] (0.4,0.4) rectangle (#2 * 0.4 + 0.4,0.8);
+  \draw (0.4,0.4) -- (0.4,0.8) -- (2.0,0.8) -- (2.0,0.4) -- (0.4,0.4);
+  \foreach \x in {2, 3, 4}
+    \draw (\x * 0.4, 0.4) -- (\x * 0.4, 0.8);
+  % index texts
+  \foreach \x in {0, 1, 2, 3}
+    \draw (\x*0.4 + 0.6, 0.8) node[anchor=south] {\scriptsize $\x$};
+  \draw (0.4,0.6) node[anchor=east] {\scriptsize $L$};
+  \draw (#2 * 0.4 + 0.6,0.4) node[anchor=north] {\scriptsize $i$};
+  % array contents
+  \draw (0.6,0.6) node {\scriptsize $2$};
+  \draw (1.0,0.6) node {\scriptsize $4$};
+  \draw (1.4,0.6) node {\scriptsize $6$};
+  \draw (1.8,0.6) node {\scriptsize $7$};
+
+  % array R
+  \fill[brown!20!white] (2.8,0.4) rectangle (4.4,0.8);
+  \fill[brown!60!white] (2.8,0.4) rectangle (#3 * 0.4 + 2.8,0.8);
+  \draw (2.8,0.4) -- (2.8,0.8) -- (4.4,0.8) -- (4.4,0.4) -- (2.8,0.4);
+  \foreach \x in {8, 9, 10}
+    \draw (\x * 0.4, 0.4) -- (\x * 0.4, 0.8);
+  % index texts
+  \foreach \x in {0, 1, 2, 3}
+    \draw (\x*0.4 + 3.0, 0.8) node[anchor=south] {\scriptsize $\x$};
+  \draw (2.8,0.6) node[anchor=east] {\scriptsize $R$};
+  \draw (#3 * 0.4 + 3.0,0.4) node[anchor=north] {\scriptsize $j$};
+  % array contents
+  \draw (3.0,0.6) node {\scriptsize $1$};
+  \draw (3.4,0.6) node {\scriptsize $2$};
+  \draw (3.8,0.6) node {\scriptsize $3$};
+  \draw (4.2,0.6) node {\scriptsize $5$};
+\end{tikzpicture}
+}

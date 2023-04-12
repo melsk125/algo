@@ -1,8 +1,12 @@
 % LuaLaTeX文書; 文字コードはUTF-8
-\documentclass[unicode,12pt,aspectratio=169,notes]{beamer} % 'unicode'が必要
+\documentclass[unicode,11pt,aspectratio=169,notes]{beamer} % 'unicode'が必要
 \usepackage{luatexja} % 日本語したい
 \usepackage{geometry}
 \usepackage{tikz}
+\usepackage{import}
+\usepackage{multicol}
+
+\import{./}{mergefigure.tex}
 
 \usetheme{boxes}
 
@@ -539,70 +543,175 @@
 \note[itemize]{
   \item このアルゴリズムのキモは\textbf{統合}の部分にある。
 }
+
 \begin{frame}{マージソート}
   \textbf{マージの直感}：ソート済みの２つの部分列の先頭を比べつつ、小さい方を順に元の列
   の解を作っていく。
 \end{frame}
 
+\begin{frame}[fragile]{マージソート}{擬似コード}
+  {\scriptsize MERGE(A, p, q, r)}
+  {\tiny
+  \begin{semiverbatim}
+ 1  n_L = q - p + 1             // A[p:q] の長さ
+ 2  n_R = r - q                 // A[q + 1:r] の長さ
+ 3  L[0:n_L - 1] と R[0:n_R - 1] を新しい配列とする
+ 4  for i = 0 to n_L - 1        // A[p:q] を L[0:n_L - 1] へコピー
+ 5    L[i] = A[p + i]
+ 6  for j = 0 to n_R - 1        // A[q + 1:r] を R[0:n_R - 1] へコピー
+ 7    R[j] = A[q + j + 1]
+ 8  i = 0
+ 9  j = 0
+10  k = p
+12  while i < n_L かつ j < n_R  // L と R ともマージされていない要素があるかぎり、最小の要素を A に挿入
+13    if L[i] <= R[j]
+14      A[k] = L[i]
+15      i = i + 1
+16    else A[k] = R[j]
+17      j = j + 1
+18    k = k + 1
+20  while i < n_L               // L に要素が残っている場合、A に挿入
+21    A[k] = L[i]
+22    i = i + 1
+23    k = k + 1
+24  while j < n_R
+25    A[k] = R[j]               // R に要素が残っている場合、A に挿入
+26    j = j + 1
+27    k + k + 1
+  \end{semiverbatim}
+  }
+\end{frame}
+
 \begin{frame}{マージソート}
   \begin{figure}
-    \begin{tikzpicture}
-      % array A
-      \fill[blue!20!white] (0.8,1.6) rectangle (4.0,2.0);
-      \draw (0.4,2.0) -- (4.4,2.0);
-      \draw (0.4,1.6) -- (4.4,1.6);
-      \foreach \x in {2, 3, 4, 5, 6, 7, 8, 9, 10}
-        \draw (\x * 0.4, 1.6) -- (\x * 0.4, 2.0);
-      % index texts
-      \foreach \x in {8, 9, 10, 11, 12, 13, 14, 15, 16, 17}
-        \draw (\x*0.4 - 2.6, 2.0) node[anchor=south] {\scriptsize $\x$};
-      \draw (0.4,1.8) node[anchor=east] {\scriptsize $A$};
-      \draw (0.6,1.8) node {\scriptsize $\ldots$};
-      \draw (4.2,1.8) node {\scriptsize $\ldots$};
-      \draw (1.0,1.6) node[anchor=north] {\scriptsize $k$};
-      % array contents
-      \draw (1.0,1.8) node {\scriptsize $2$};
-      \draw (1.4,1.8) node {\scriptsize $4$};
-      \draw (1.8,1.8) node {\scriptsize $6$};
-      \draw (2.2,1.8) node {\scriptsize $7$};
-      \draw (2.6,1.8) node {\scriptsize $1$};
-      \draw (3.0,1.8) node {\scriptsize $2$};
-      \draw (3.4,1.8) node {\scriptsize $3$};
-      \draw (3.8,1.8) node {\scriptsize $5$};
+    \includegraphics[height=0.85\textheight]{resources/fig02.03}
+  \end{figure}
+\end{frame}
 
-      % array L
-      \fill[brown!20!white] (0.4,0.4) rectangle (2.0,0.8);
-      \draw (0.4,0.4) -- (0.4,0.8) -- (2.0,0.8) -- (2.0,0.4) -- (0.4,0.4);
-      \foreach \x in {2, 3, 4}
-        \draw (\x * 0.4, 0.4) -- (\x * 0.4, 0.8);
-      % index texts
-      \foreach \x in {0, 1, 2, 3}
-        \draw (\x*0.4 + 0.6, 0.8) node[anchor=south] {\scriptsize $\x$};
-      \draw (0.4,0.6) node[anchor=east] {\scriptsize $L$};
-      \draw (0.6,0.4) node[anchor=north] {\scriptsize $i$};
-      % array contents
-      \draw (0.6,0.6) node {\scriptsize $2$};
-      \draw (1.0,0.6) node {\scriptsize $4$};
-      \draw (1.4,0.6) node {\scriptsize $6$};
-      \draw (1.8,0.6) node {\scriptsize $7$};
+\note[itemize]{
+  \item このマージの手続きは、２分割された配列が与えられ、それぞれの分割された配列は
+  ソート済みである。これはマージの入力です。
+  \item アルゴリズムの７行目まで、それぞれを別々の配列に入れて、１０行目まで、準備が
+  終わり、図aになります。
+  \item １２行目から１８行目までの while ループはアルゴリズムのキモです。
+  i と j が指している数を比べて、小さい方を配列 A に入れていく
+  \item 図aのところは、iが指している2とjが指している1を比べた。
+  1が小さいので1を配列Aのk番目に入れる。
+  小さい方の指しているjを1増やして、Aのインデックスkを1増やして、この反復が終わる。
+  \item こうやっていくと、jが配列の大きさから出てしまったところに、このループが終わる。
+  \item 終わったところは、図gになりますね。
+  \item あとは、残っているものを配列Aに入れてマージが終了します。
+}
 
-      % array R
-      \fill[brown!20!white] (2.8,0.4) rectangle (4.4,0.8);
-      \draw (2.8,0.4) -- (2.8,0.8) -- (4.4,0.8) -- (4.4,0.4) -- (2.8,0.4);
-      \foreach \x in {8, 9, 10}
-        \draw (\x * 0.4, 0.4) -- (\x * 0.4, 0.8);
-      % index texts
-      \foreach \x in {0, 1, 2, 3}
-        \draw (\x*0.4 + 3.0, 0.8) node[anchor=south] {\scriptsize $\x$};
-      \draw (2.8,0.6) node[anchor=east] {\scriptsize $R$};
-      \draw (3.0,0.4) node[anchor=north] {\scriptsize $j$};
-      % array contents
-      \draw (3.0,0.6) node {\scriptsize $1$};
-      \draw (3.4,0.6) node {\scriptsize $2$};
-      \draw (3.8,0.6) node {\scriptsize $3$};
-      \draw (4.2,0.6) node {\scriptsize $5$};
-    \end{tikzpicture}
-    \caption{a}
+\begin{frame}[fragile]{マージソート}{マージの解析}
+  {\scriptsize MERGE(A, p, q, r)}
+  {\tiny
+  \begin{semiverbatim}
+ 1  n_L = q - p + 1
+ 2  n_R = r - q
+ 3  L[0:n_L - 1] と R[0:n_R - 1] を新しい配列とする     // Θ(n)
+ 4  for i = 0 to n_L - 1                // Θ(n)
+ 5    L[i] = A[p + i]
+ 6  for j = 0 to n_R - 1                // Θ(n)
+ 7    R[j] = A[q + j + 1]
+ 8  i = 0
+ 9  j = 0
+10  k = p
+12  while i < n_L かつ j < n_R           // Θ(n)
+13    if L[i] <= R[j]
+14      A[k] = L[i]
+15      i = i + 1
+16    else A[k] = R[j]
+17      j = j + 1
+18    k = k + 1
+20  while i < n_L                       // Θ(n)
+21    A[k] = L[i]
+22    i = i + 1
+23    k = k + 1
+24  while j < n_R                       // Θ(n)
+25    A[k] = R[j]
+26    j = j + 1
+27    k + k + 1
+  \end{semiverbatim}
+  }
+\end{frame}
+
+\begin{frame}[fragile]{マージソート}{擬似コード}
+  MERGE-SORT(A, p, r)
+  \begin{semiverbatim}
+ 1  if p >= r                   // 要素が 0 または 1 個
+ 2    return
+ 3  q = floor((p + r)/2)        // A[p:r] の真ん中
+ 4  MERGE-SORT(A, p, q)         // A[p:q] を再帰的にソートする
+ 5  MERGE-SORT(A, q + 1, r)     // A[q + 1:r] を再帰的にソートする
+ 6  // それぞれソート済みの A[p:q] と A[q + 1:r] を A[p:r] にマージする
+ 7  MERGE(A, p, q, r)
+  \end{semiverbatim}
+\end{frame}
+
+\begin{frame}{分割統治法}
+  \begin{description}
+    \item[分割] 問題をいくつかの同じ問題のより小さいインスタンスである部分問題に分割。
+    \item[統治] 部分問題を再帰的に解く。ただし、部分問題のサイズが十分小さいときは
+    直接的な方法で解く。
+    \item[統合] 部分問題の解を組み合わせて元の問題の解を得る。
+  \end{description}
+\end{frame}
+
+\begin{frame}{分割統治法}
+  問題のインスタンスの大きさが $n$ のとき
+  \begin{description}
+    \item[分割] 問題を $a$ 個の同じ問題の大きさ $n/b$ インスタンスである部分問題に分割。
+    \item[統治] 部分問題を再帰的に解く。ただし、部分問題のサイズ $n'$ が $n < n_0$ のときは
+    直接的な方法で解く。
+    \item[統合] 部分問題の解を組み合わせて元の問題の解を得る。
+  \end{description}
+\end{frame}
+
+\begin{frame}{分割統治法}
+  問題のインスタンスの大きさが $n$ のとき、実行時間が \alert{$T(n)$}
+  \begin{description}
+    \item[分割] 問題を $a$ 個の同じ問題の大きさ $n/b$ インスタンスである部分問題に分割。
+    \alert{$D(n)$}
+    \item[統治] 部分問題を再帰的に解く \alert{aT(n/b)}。
+    ただし、部分問題のサイズ $n'$ が $n' < n_0$ のときは直接的な方法で解く
+    \alert{$\Theta(1)$}。
+    \item[統合] 部分問題の解を組み合わせて元の問題の解を得る。\alert{$C(n)$}
+  \end{description}
+
+  \alert{$T(n)$} がこのような漸化式になる。
+  \[
+    T(n) = 
+    \begin{cases}
+      \Theta(1) & n < n_0 \text{のとき} \\
+      D(n) + aT(n/b) + C(n) & \text{それ以外のとき}
+    \end{cases}
+  \]
+\end{frame}
+
+\begin{frame}{分割統治法}{マージソートの場合}
+  問題のインスタンスの大きさが $n$ のとき、実行時間が \alert{$T(n)$}
+  \begin{description}
+    \item[分割] 問題を $a$ 個の同じ問題の大きさ $n/b$ インスタンスである部分問題に分割。
+    \alert{$D(n) = \Theta(1)$}
+    \item[統治] 部分問題を再帰的に解く \alert{aT(n/b) = 2T(n/2)}。
+    ただし、部分問題のサイズ $n'$ が $n < n_0$ のときは直接的な方法で解く \alert{$\Theta(1)$}。
+    \item[統合] 部分問題の解を組み合わせて元の問題の解を得る。\alert{$C(n) = \Theta(n)$}
+  \end{description}
+
+  \alert{$T(n)$} がこのような漸化式になる。
+  \[
+    T(n) = 
+    \begin{cases}
+      c_1 & n = 1 \text{のとき} \\
+      2T(n/2) + c_2n & n > 1 \text{のとき}
+    \end{cases}
+  \]
+\end{frame}
+
+\begin{frame}
+  \begin{figure}
+    \includegraphics[height=0.95\textheight]{resources/fig02.05}
   \end{figure}
 \end{frame}
 
