@@ -3,6 +3,7 @@
 \usepackage{luatexja} % 日本語したい
 \usepackage{geometry}
 \usepackage{tikz}
+\usepackage{pgfplots}
 \usepackage{import}
 \usepackage{multicol}
 
@@ -549,7 +550,7 @@
   の解を作っていく。
 \end{frame}
 
-\begin{frame}[fragile]{マージソート}{擬似コード}
+\begin{frame}[fragile]{マージソート}{マージの擬似コード}
   {\scriptsize MERGE(A, p, q, r)}
   {\tiny
   \begin{semiverbatim}
@@ -649,6 +650,13 @@
   \end{semiverbatim}
 \end{frame}
 
+\note[itemize]{
+  \item まずベースケースを処理する。要素が１以下の場合、配列がソート済みなので終了。
+  \item 中間点を算出する。
+  \item 分割された配列をそれぞれ再帰的にソートする。
+  \item ソートが終わったらマージ作業をする。
+}
+
 \begin{frame}{分割統治法}
   \begin{description}
     \item[分割] 問題をいくつかの同じ問題のより小さいインスタンスである部分問題に分割。
@@ -657,6 +665,11 @@
     \item[統合] 部分問題の解を組み合わせて元の問題の解を得る。
   \end{description}
 \end{frame}
+
+\note[itemize]{
+  \item では、分割統治法の解析に入りたいと思います。
+  \item まず、分割統治法はどのようなパラダイムか、もう一回復習します。
+}
 
 \begin{frame}{分割統治法}
   問題のインスタンスの大きさが $n$ のとき
@@ -667,6 +680,10 @@
     \item[統合] 部分問題の解を組み合わせて元の問題の解を得る。
   \end{description}
 \end{frame}
+
+\note[itemize]{
+  \item では、もっと具体的に
+}
 
 \begin{frame}{分割統治法}
   問題のインスタンスの大きさが $n$ のとき、実行時間が \alert{$T(n)$}
@@ -689,6 +706,10 @@
   \]
 \end{frame}
 
+\note[itemize]{
+  \item それぞれの要素の実行時間はこのように数式化できる。
+}
+
 \begin{frame}{分割統治法}{マージソートの場合}
   問題のインスタンスの大きさが $n$ のとき、実行時間が \alert{$T(n)$}
   \begin{description}
@@ -709,11 +730,30 @@
   \]
 \end{frame}
 
+\note[itemize]{
+  \item マージソートの場合はこうなります。
+  \item この漸化式を数学的に解くマスター法は「第４章：分割統治」で紹介されるが、
+  ここではまだやりません。
+}
+
 \begin{frame}
   \begin{figure}
     \includegraphics[height=0.95\textheight]{resources/fig02.05}
   \end{figure}
 \end{frame}
+
+\note[itemize]{
+  \item イメージとしてはこれですね。
+  \item a は元の問題です。
+  \item 分割して、b になりますが、分割するのに $c_2n$ 時間を要します。
+  そして、分割された小さい問題は $T(n/2)$ 時間です。
+  \item これを繰り返して、ベースケースまで分割すると、図 d のようになります。
+  \item 各層の分割は合わせて $c_2n$ 時間、分割する回数は $\lg n$ なので、全部分割に
+  要する時間は $c_2n \lg n$ です。
+  \item そして、ベースケースはそれぞれ $c_1$ 時間を必要として、すべて $n$ 個なので、
+  $c_1n$ 時間を必要とします。
+  \item 合わせて $c_2n \lg n + c_1n$ ですが、特徴づけは $\Theta(n \lg n)$ です。
+}
 
 \section*{第３章：実行時間の特徴づけ}
 
@@ -739,13 +779,139 @@
     \item \textbf{$O$ 記法}は増加速度の\textbf{上界}を表現する。\\
     $F(n)$ の増加速度は $n^3$ や $n^4$ の増加速度より速くないため、
     $F(n)$ は $O(n^3)$ であり $O(n^4)$ である。
-    \item \textbf{$\Theta$ 記法}は増加速度の\textbf{タイトな限界}を表現する。\\
-    $F(n)$ の増加速度は $n^3$ の増加速度と漸近的に比例しているため、
-    $F(n)$ は $\Theta(n^3)$ である。
     \item \textbf{$\Omega$ 記法}は増加速度の\textbf{下界}を表現する。\\
     $F(n)$ の増加速度は $n^3$ や $n^2$ の増加速度より遅くないため、
     $F(n)$ は $\Omega(n^3)$ であり $\Omega(n^2)$ である。
+    \item \textbf{$\Theta$ 記法}は増加速度の\textbf{タイトな限界}を表現する。\\
+    $F(n)$ の増加速度は $n^3$ の増加速度と漸近的に比例しているため、
+    $F(n)$ は $\Theta(n^3)$ である。
   \end{itemize}
+\end{frame}
+
+\begin{frame}{漸近記法}{$O$-直感}
+  \begin{figure}
+    \begin{tikzpicture}
+      \begin{axis}[
+        xmin=0,xmax=30,
+        ymin=0,
+        axis lines=middle
+      ]
+        \addplot[domain=0:30, color=red, solid]{x^4}
+          node[left, pos=0.9]{$n^4$};
+        \addplot[domain=0:30, color=red, solid]{12*x^3}
+          node[left, pos=0.9]{$12n^3$};
+        \addplot[domain=0:30, color=blue, solid, style=thick]
+          {7*x^3 + 100*x^2 - 20*x + 6}
+          node[left, pos=0.6]{$7n^3 + 100n^2 - 20n + 6$};
+      \end{axis}
+    \end{tikzpicture}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{漸近記法}{$O$-直感}
+  \begin{figure}
+    \begin{tikzpicture}
+      \begin{axis}[
+        xmin=1,xmax=10000,xmode=log,
+        ymin=1,ymode=log,
+        axis lines=middle
+      ]
+        \addplot[domain=1:10000, color=red, solid]{x^4}
+          node[left, pos=0.9]{$n^4$};
+        \addplot[domain=1:10000, color=red, solid]{12*x^3}
+          node[left, pos=0.9]{$12n^3$};
+        \addplot[domain=1:10000, color=blue, solid, style=thick]
+          {7*x^3 + 100*x^2 - 20*x + 6}
+          node[left, pos=0.6]{$7n^3 + 100n^2 - 20n + 6$};
+      \end{axis}
+    \end{tikzpicture}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{漸近記法}{$\Omega$-直感}
+  \begin{figure}
+    \begin{tikzpicture}
+      \begin{axis}[
+        xmin=0,xmax=30,
+        ymin=0,
+        axis lines=middle
+      ]
+        \addplot[domain=0:30, color=red, solid]{x^2}
+          node[above, pos=0.6]{$n^2$};
+        \addplot[domain=0:30, color=red, solid]{5*x^3}
+          node[left, pos=0.8]{$5n^3$};
+        \addplot[domain=0:30, color=blue, solid, style=thick]
+          {7*x^3 + 100*x^2 - 20*x + 6}
+          node[left, pos=0.6]{$7n^3 + 100n^2 - 20n + 6$};
+      \end{axis}
+    \end{tikzpicture}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{漸近記法}{$\Omega$-直感}
+  \begin{figure}
+    \begin{tikzpicture}
+      \begin{axis}[
+        xmin=1,xmax=10000,xmode=log,
+        ymin=1,ymode=log,
+        axis lines=middle
+      ]
+        \addplot[domain=1:10000, color=red, solid]{x^2}
+          node[right, pos=0.6]{$n^2$};
+        \addplot[domain=1:10000, color=red, solid]{5*x^3}
+          node[right, pos=0.8]{$5n^3$};
+        \addplot[domain=1:10000, color=blue, solid, style=thick]
+          {7*x^3 + 100*x^2 - 20*x + 6}
+          node[left, pos=0.6]{$7n^3 + 100n^2 - 20n + 6$};
+      \end{axis}
+    \end{tikzpicture}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{漸近記法}{$\Theta$-直感}
+  \begin{figure}
+    \begin{tikzpicture}
+      \begin{axis}[
+        xmin=0,xmax=30,
+        ymin=0,
+        axis lines=middle
+      ]
+        \addplot[domain=0:30, color=red, solid]{7*x^3}
+          node[right, pos=0.6]{$7n^3$};
+        \addplot[domain=0:30, color=red, solid]{12*x^3}
+          node[left, pos=0.8]{$12n^3$};
+        \addplot[domain=0:30, color=blue, solid, style=thick]
+          {7*x^3 + 100*x^2 - 20*x + 6}
+          node[left, pos=0.6]{$7n^3 + 100n^2 - 20n + 6$};
+      \end{axis}
+    \end{tikzpicture}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{漸近記法}{$\Theta$-直感}
+  \begin{figure}
+    \begin{tikzpicture}
+      \begin{axis}[
+        xmin=1,xmax=10000,xmode=log,
+        ymin=1,ymode=log,
+        axis lines=middle
+      ]
+        \addplot[domain=1:10000, color=red, solid]{5*x^3}
+          node[right, pos=0.8]{$5n^3$};
+        \addplot[domain=1:10000, color=red, solid]{12*x^3}
+          node[left, pos=0.8]{$12n^3$};
+        \addplot[domain=1:10000, color=blue, solid, style=thick]
+          {7*x^3 + 100*x^2 - 20*x + 6}
+          node[left, pos=0.6]{$7n^3 + 100n^2 - 20n + 6$};
+      \end{axis}
+    \end{tikzpicture}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{漸近記法}
+  \begin{figure}
+    \includegraphics[width=0.95\textwidth]{resources/fig03.02}
+  \end{figure}
 \end{frame}
 
 \begin{frame}{漸近記法}{定義}
@@ -798,5 +964,10 @@
     \includegraphics[width=0.95\textwidth]{resources/fig03.02}
   \end{figure}
 \end{frame}
+
+\note[itemize]{
+  \item この章では漸近記法に関する定理とよく使われる公式などまとめられている
+  \item 詳しくは教科書を見てください
+}
 
 \end{document}
