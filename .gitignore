@@ -32,3 +32,5 @@ user.bazelrc
 /slides/*/*.toc
 /slides/*/*.vrb
 
+/problems/*.aux
+/problems/*.log

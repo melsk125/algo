@@ -1,0 +1,51 @@
+\documentclass[book]{jlreq}
+
+\usepackage{amsthm}
+
+\newtheorem{problem}{問題}[chapter]
+\newenvironment{solution}
+  {\begin{proof}[回答：]}
+  {\end{proof}} 
+
+\title{『アルゴリズムイントロダクション　第４版』章末問題}
+\author{panot}
+
+\begin{document}
+
+\maketitle
+
+\chapter{計算におけるアルゴリズムの役割}
+
+\begin{problem}
+  各関数$f(n)$と時間$t$に対して、アルゴリズムが問題を解くのに$f(n)$マイクロ秒かかる
+  とき、$t$時間で解くことができる最大の問題サイズ$n$を求めよ。
+\end{problem}
+\begin{solution}
+  このような計算結果になる。
+  \begin{table}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+      \hline
+      & 1秒 & 1分 & 1時間 & 1日 & 1ヶ月 & 1年 & 1世紀 \\ \hline
+      $\lg n$ & $10^{301}$ & $10^{18061}$ & $10^{1083707}$ & $10^{26008991}$ &
+        $10^{78 0269748}$ & $10^{9363236985}$ & $10^{936323698513}$ \\ \hline
+      $\sqrt{n}$ & $10^6$ & $3.6\times 10^9$ & $1.30 \times 10^{13}$ &
+        $7.46 \times 10^{15}$ & $6.72 \times 10^{18}$ & $9.67 \times 10^{20}$ &
+        $9.67 \times 10^{22}$ \\ \hline
+      $n$ & $10^3$ & $6 \times 10^4$ & $3.6 \times 10^6$ & $8.64 \times 10^7$ &
+        $2.59 \times 10^9$ & $3.11 \times 10^{10}$ & $3.11 \times 10^{12}$
+        \\ \hline
+      $n\lg n$ & $140$ & $4895$ & $204094$ & $3.94 \times 10^6$ &
+        $9.77 \times 10^7$ & $1.04 \times 10^9$ & $8.56 \times 10^{10}$
+        \\ \hline
+      $n^2$ & $31$ & $244$ & $1897$ & $9295$ & $50911$ & $176363$ &
+        $1.76 \times 10^6$ \\ \hline
+      $n^3$ & $10$ & $39$ & $153$ & $442$ & $1373$ & $3144$ & $14597$ \\ \hline
+      $2^n$ & $9$ & $15$ & $21$ & $26$ & $31$ & $34$ & $41$ \\ \hline
+      $n!$ & $6$ & $8$ & $9$ & $11$ & $12$ & $13$ & $15$ \\
+      \hline
+    \end{tabular}
+    \caption{計算結果}
+  \end{table}
+\end{solution}
+
+\end{document}
