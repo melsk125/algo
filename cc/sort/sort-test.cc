@@ -4,7 +4,9 @@
 #include <vector>
 
 #include "gmock/gmock.h"
-#include "cc/sort.h"
+#include "cc/sort/heap-sort.h"
+#include "cc/sort/insertion-sort.h"
+#include "cc/sort/merge-sort.h"
 #include "cc/string-utils.h"
 
 using ::testing::ElementsAre;
@@ -15,17 +17,16 @@ struct SortInstance {
   const std::vector<int> expected;
 };
 
-const std::vector<std::function<void(std::vector<int>&)>> SORT_FUNCTIONS =
-    {cc::InsertionSort, cc::MergeSort, cc::HeapSort};
+// const std::vector<::cc::sort::Sorter> SORT_FUNCTIONS =
+//     {::cc::sort::InsertionSorter};
 
-void DoSortTest(SortInstance instance,
-                std::function<void(std::vector<int>&)> sort) {
+void DoSortTest(SortInstance instance, ::cc::sort::Sorter* sorter) {
   std::vector<int> input;
   std::copy(instance.input.begin(),
             instance.input.end(),
             std::back_inserter(input));
 
-  sort(input);
+  sorter->Sort(input);
   std::cout << "   input: " << cc::string_utils::PrintVector(instance.input)
       << std::endl;
   std::cout << "  output: " << cc::string_utils::PrintVector(input)
@@ -35,13 +36,21 @@ void DoSortTest(SortInstance instance,
   EXPECT_THAT(input, ElementsAreArray(instance.expected));
 }
 
-void DoAllSortTests(SortInstance instance) {
-  for (auto sort : SORT_FUNCTIONS) {
-    DoSortTest(instance, sort);
+void DoAllSortTests(SortInstance instance,
+                    std::vector<::cc::sort::Sorter*>& sorters) {
+  for (auto sorter : sorters) {
+    DoSortTest(instance, sorter);
   }
 }
 
 TEST(SortTest, DoTest) {
+  std::vector<::cc::sort::Sorter*> sorters;
+  ::cc::sort::InsertionSorter insertion_sorter;
+  ::cc::sort::MergeSorter merge_sorter;
+  ::cc::sort::HeapSorter heap_sorter;
+  sorters.push_back(&insertion_sorter);
+  sorters.push_back(&merge_sorter);
+  sorters.push_back(&heap_sorter);
   std::vector<SortInstance> instances = {
     {{}, {}},
     {{2}, {2}},
@@ -50,6 +59,6 @@ TEST(SortTest, DoTest) {
     {{31, 41, 59, 26, 41, 58}, {26, 31, 41, 41, 58, 59}},
   };
   for (auto instance : instances) {
-    DoAllSortTests(instance);
+    DoAllSortTests(instance, sorters);
   }
 }
