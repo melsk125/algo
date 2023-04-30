@@ -7,7 +7,10 @@
 \usepackage{import}
 \usepackage{multicol}
 
+\DeclareMathOperator{\E}{\mathrm{E}}
+
 \usetheme{boxes}
+\usefonttheme[onlymath]{serif}
 
 \title{精読『アルゴリズムイントロダクション 第4版』}
 \subtitle{第２回}
@@ -24,7 +27,7 @@
   \begin{itemize}
     \item アルゴリズムは明確に定義された手続き。
     \item アルゴリズムによって効率が異なり、必要なリソースも大きく変わる。
-    \item アルゴリズムの実行時間を比較する際、増加が一番速い項で特徴づけられる。
+    \item 実行時間を比較する際、増加が一番速い項で特徴づけられる。
   \end{itemize}
 \end{frame}
 
@@ -86,7 +89,13 @@
 \end{frame}
 
 \note[itemize]{
-  \item TODO: describe above
+  \item 積を直接計算して $\Theta(n^3)$ になる理由は、
+  積の要素数は $n^2$ それぞれ計算するのに $n$ 回の掛け算して和をとるので、
+  $n^3$ 回の掛け算と足し算が行われます。
+  \item 単純の分割統治法を使っても $\Theta(n^3)$ なので、
+  1969年の Strassen の発見まで上界が小さくなることに誰も期待していなかった。
+  \item ちなみに、理論上 Strassen のアルゴリズムより上界が小さいアルゴリズムがいくつか
+  発見されていますが、実用的ではないそうです。
 }
 
 \begin{frame}{漸化式を解く方法}
@@ -101,7 +110,14 @@
 \end{frame}
 
 \note[itemize]{
-  \item TODO: describe each
+  \item 置き換え法（substitution method）は、解くよりも推測した限界を数学的帰納法で
+  証明する方法です。事前に推測を行う必要があります。
+  \item 再帰木法（recursion-tree method）は、個人的に一番直感的かなと思います。
+  木を書いて解析することです。
+  \item マスター法（master method）は、特定の形の漸化式を解く方法です。
+  最初は怖そうな定理だと思ってましたが、
+  意外と直感的で再帰木法からの閉じた解が得られるような感覚です。
+  \item ２次方程式を平方完成で解くか、解の公式を使うかみたいな感覚かな？
 }
 
 \begin{frame}{正方行列の積}
@@ -112,6 +128,12 @@
   \]
 \end{frame}
 
+\begin{frame}{正方行列の積}
+  \begin{figure}
+    \includegraphics[height=0.8\textheight]{../resources/mat-mul}
+  \end{figure}
+\end{frame}
+
 \begin{frame}{単純計算アルゴリズム}
   \begin{figure}
     \includegraphics[width=0.95\textwidth]{../resources/pseudo-04-01}
@@ -119,7 +141,9 @@
 \end{frame}
 
 \note[itemize]{
-  \item TODO: Explain above algorithm
+  \item まず $c_{ij}$ を $0$ に初期化します。
+  \item 最初の２つの for ループは積の各要素を繰り返します。
+  \item 一番深い for ループは積の各要素を計算です。
 }
 
 \begin{frame}{単純な分割統治法}
@@ -156,6 +180,10 @@
   この実行時間は $\Theta(n^3)$ である。
 \end{frame}
 
+\note[itemize]{
+  \item 単純に分割しても計算量は変わりませんね。
+}
+
 \begin{frame}{Strassen のアルゴリズム}
   \begin{itemize}
     \item 詳細は各自確認してください。
@@ -163,13 +191,18 @@
   \end{itemize}
 \end{frame}
 
+\note[itemize]{
+  \item 詳細は細かいのでここで紹介しません。
+  \item 実行時間の漸化式をどうやって解析するのが今回のキモです。
+}
+
 \section*{アルゴリズム的な漸化式の解く方法}
 
 \begin{frame}
   \sectionpage{}
 \end{frame}
 
-\begin{frame}
+\begin{frame}{漸化式を解く方法}
   \begin{itemize}
     \item \textbf{置き換え法（substitution method）}では、推測し数学的帰納法で証明する。
     \item \textbf{再帰木法（recursion-tree method）}では、漸化式を木と見立てて、各階層
@@ -196,13 +229,18 @@
   \vspace{5mm}
 
   すべての $n\geq n_0$ に対して $T(n)\leq cn\lg n$、と仮定する。
+  これを\textbf{帰納仮定（inductive hypothesis）}と名付ける。
   
-  ただし、定数 $c>0$ と $n_0>0$ は過程で求める。
+  ただし、定数 $c>0$ と $n_0>0$ は証明過程で求める。
 
   \vspace{5mm}
 
   これが証明できれば、$T(n)=O(n\lg n)$ も証明されることになる。
 \end{frame}
+
+\note[itemize]{
+  \item 帰納仮定を証明したい。
+}
 
 \begin{frame}{例：数学的帰納法の帰納ケース（inductive case）}
   \begin{itemize}
@@ -224,6 +262,11 @@
 \end{frame}
 
 \note[itemize]{
+  \item 帰納仮定の帰納ケースを証明する。
+  \item 整数上の数学的帰納法の帰納ケースは「$n-1$までが成り立つなら$n$も成り立つ」
+  を証明する。
+  \item 帰納仮定に代入。
+  \item 結果を漸化式に代入。
   \item 最後の行では $c$ の選び方によって、$cn$ が $\Theta(n)$ に隠されている
   無名の関数より大きくなるために不等式が成り立つ。
 }
@@ -246,6 +289,12 @@
   \end{itemize}
 \end{frame}
 
+\note[itemize]{
+  \item 帰納仮定の基底ケースを証明する。
+  \item 帰納ケースでは、$n\geq 2n_0$の場合を証明したが、今度$n_0\leq n<2n_0$の場合を証明。
+  \item アルゴリズム的というのは、必ず漸化式の基底ケースに帰着して、有限時間内に終了。
+}
+
 \begin{frame}{練習問題}
   手を動かして証明してみましょう！
   \begin{enumerate}
@@ -257,6 +306,11 @@
     \item $T(n)=4T(n/2)+\Theta(n)$ の解は $T(n)=\Theta(n^2)$
   \end{enumerate}
 \end{frame}
+
+\note[itemize]{
+  \item ここでやりません。
+  \item このスライドを後で見て、練習したい方はどうぞ。
+}
 
 \begin{frame}{再帰木法（recursion-tree method）}
   \begin{itemize}
@@ -275,6 +329,17 @@
   \end{figure}
 \end{frame}
 
+\note[itemize]{
+  \item まず $T(n)$ を根にします。
+  \item 次は $T$ で表されている葉っぱを再帰的に作ります。
+  \item 節点を漸化式じゃないほうの項にして、この場合は $\Theta(n^2)$ なので、
+  係数を $c$ にして、書きます。その子節点は部分問題にしていきます。
+  \item ２－３回繰り返していって、基底ケースを書く。
+  \item 分割統治法の基底ケースは「問題の大きさは特定な大きさより小さいとき直接な方法で解く」
+  とあるため、実行時間は定数で $\Theta(1)$になります。
+  \item 次は各層の実行時間の和を計算して、層の数を計算して、総和を取ります。
+}
+
 \begin{frame}{例：計算}
   \begin{align*}
     T(n) & = cn^2 + \frac{3}{16}cn^2 + \left(\frac{3}{16}\right)^2cn^2 + \cdots
@@ -288,6 +353,10 @@
          & = O(n^2)
   \end{align*}
 \end{frame}
+
+\note[itemize]{
+  \item この場合の総和はこう計算できますね。
+}
 
 \begin{frame}{マスター法（master method）}
   \begin{itemize}
@@ -319,10 +388,21 @@
   \end{theorem}
 \end{frame}
 
+\note[itemize]{
+  \item 第一印象：こわい。
+  \item 上の方は、このような漸化式で使えますよ、という定理の適応条件ですね。
+  大体アルゴリズム解析で見る漸化式はこの形です。
+  \item 次はこの３つの $f(n)$ の場合分けです。
+  \item １は $f(n)$ の上界がある条件に満たす場合。
+  \item ２は $f(n)$ のタイトな限界がある条件に満たす場合。
+  \item ３は $f(n)$ の下界がある条件に満たす場合。
+  \item 全ての条件は $n^{\log_ba}$ に関連してる。
+}
+
 \begin{frame}{マスター定理を直感的に見てみよう}
   \begin{itemize}
-    \item<+-> 再帰による $aT(n/b)$ と $f(n)$ の増加率を比較する。
-    \item<+-> 再帰による $aT(n/b)$ の漸近的増加率は $O(n^{\log_ba})$ である。
+    \item<+-> $aT(n/b)$ と $f(n)$ の再帰による増加率を比較する。
+    \item<+-> $aT(n/b)$ の再帰による漸近的増加の限界は $O(n^{\log_ba})$ である。
     \item<+-> $n^{\log_ba}$ を\textbf{分水嶺関数（watershed function）}という。
     \item<+-> １の場合は $aT(n/b)$ の増加率が大きい。
     \item<+-> ２の場合は同じぐらい。
@@ -331,25 +411,49 @@
   \end{itemize}
 \end{frame}
 
+\note[itemize]{
+  \item $aT(n/b)$ という項が再帰的に足し算していけば、どれぐらいの増加率があるのか？
+  \item $f(n)$ という項が再帰的に足し算していけば、どれぐらいの増加率があるのか？
+  \item この２つの増加率を比較して、場合分けしている。
+  \item 前のスライドで全ての条件は $n^{\log_ba}$ に関連していると言いましたが、
+  これは $aT(n/b)$ という項の再帰による漸近的増加率。
+  \item これを名付けて、軸にして $f(n)$ という項の再帰による漸近的増加率と比較します。
+  \item １の場合は $aT(n/b)$ の増加率が大きいため、
+  漸化式全体の漸近的限界は分水嶺関数のオーダになる。
+  \item ２の場合は同じぐらいだから、漸化式全体の漸近的限界はそのコンビネーションです。
+  \item ３の場合は $f(n)$ の増加率が大きいため、
+  漸化式全体の漸近的限界は $f(n)$ のオーダになる。
+}
+
 \begin{frame}{マスター定理を使ってみる：マージソート}
   \begin{itemize}
     \item<+-> 漸化式は $T(n)=2T(n/2)+\Theta(n)$ である。
-    \item<+-> $a=2$ と $b=2$、よって分水嶺関数は $n^{\log_22}=n$。
+    \item<+-> $a=2$ と $b=2$、よって分水嶺関数は $n^{\log_22}=n$ である。
     \item<+-> $k=0$ とおき $f(n)=\Theta(n)=\Theta(n^{\log_ba}\lg^kn)$、よって２の場合になる。
-    \item<+-> 従って、$T(n)=\Theta(n\lg n)$。
+    \item<+-> 従って、$T(n)=\Theta(n^{\log_ba}\lg^{k+1}n)=\Theta(n\lg n)$ である。
   \end{itemize}
 \end{frame}
+
+\note[itemize]{
+  \item 分水嶺関数と $f(n)=\Theta(n)$ は同じオーダだから１と３の場合ではなさそう。
+  \item じゃ、２の場合の $k$ を考えましょう。
+}
 
 \begin{frame}{マスター定理を使ってみる：行列積の単純分割統治}
   \begin{itemize}
     \item<+-> 漸化式は $T(n)=8T(n/2)+\Theta(1)$ である。
-    \item<+-> $a=8$ と $b=2$、よって分水嶺関数は $n^{\log_28}=n^3$。
+    \item<+-> $a=8$ と $b=2$、よって分水嶺関数は $n^{\log_28}=n^3$ である。
     \item<+-> 任意の正の $\epsilon<3$ をとれば $f(n)=O(n^{3-\epsilon})$ がなりたつ。
     \item<+-> 分水嶺関数 $n^3$ は $f(n)=\Theta(1)$ より、多項式的な増加率の差を持つ。
     よって１の場合になる。
-    \item<+-> 従って、$T(n)=\Theta(n^3)$。
+    \item<+-> 従って、$T(n)=\Theta(n^3)$ である。
   \end{itemize}
 \end{frame}
+
+\note[itemize]{
+  \item 分水嶺関数 $n^3$ と $f(n)=\Theta(1)$ とを比較して、
+  次数が $3$ の差があるので、１の場合になります。
+}
 
 \begin{frame}{マスター定理を使ってみる：行列積の Strassen のアルゴリズム}
   \begin{itemize}
@@ -362,11 +466,120 @@
   \end{itemize}
 \end{frame}
 
+\note[itemize]{
+  \item 分水嶺関数 $n^{2.81}$ と $f(n)=\Theta(n^2)$ とを比較して、
+  次数が $0.8$ 以上の差があるので、１の場合になります。
+}
+
 \begin{frame}{飛ばす内容}
   \begin{itemize}
     \item マスター定理の証明
     \item Akra-Bazzi 法
   \end{itemize}
+\end{frame}
+
+\section*{確率的解析と乱択アルゴリズム}
+
+\begin{frame}
+  \sectionpage{}
+\end{frame}
+
+\begin{frame}{採用問題（hiring problem）}
+  \begin{itemize}
+    \item 採用エイジェントに依頼して、新しい助手を採用したい。
+    \item 毎日候補を紹介してもらい、面接して、採用するかどうかを判断する。
+    \item 面接するときに、エイジェントに少量の料金を払う。
+    \item 採用するときに、解雇にかかるコストと大量の料金をエイジェントに払う。
+    \item もっとも適した助手を雇いたい。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{単純アルゴリズム}
+  \begin{itemize}
+    \item 面接した候補が現在の助手より適任なら採用する。
+    \item どんな時点でも採用される候補は今までもっとも適任であることが保証される。
+  \end{itemize}
+  \begin{figure}
+    \includegraphics[width=0.90\textwidth]{../resources/pseudo-05-01}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{費用解析}
+  \begin{itemize}
+    \item<+-> 実行時間ではなく、費用を解析する。
+    \item<+-> 面接のコスト（安い）を $c_i$ として、採用のコスト（高い）を $c_h$ とする。
+    \item<+-> 総コストは $O(c_in+c_hm)$。
+    \item<+-> 何人採用しても面接に関する費用は固定の $c_in$ であるので、
+    採用のコスト $c_hm$ に着目する。
+    \item<+-> 最悪時の解析：候補が適任でない順に紹介されるとき、一人ずつ全員採用することになる。
+    コストは $O(c_hn)$ になる。
+    \item<+-> ただし、どういう順番に紹介されるかわからないため、平均時を解析したい。
+    \item<+-> 平均時解析するとき確率的解析を行う。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{指標確率変数（indicator random variables）}
+  \begin{itemize}
+    \item<+-> 確率と期待値との間を行き来しやすいような方法。
+    \item<+-> 標本空間 $S$ と事象 $A$ が与えられたとき、事象 $A$ に関する
+    指標確率変数（indicator random variables） $I\{A\}$ をこのように定義する：
+    \[
+      I\{A\} =
+      \begin{cases}
+        1 & A \text{ が起きるとき} \\
+        0 & A \text{ が起きないとき}
+      \end{cases}
+    \]
+    \item<+-> $X_A = I\{A\}$ のとき $\E[X_A]=\Pr\{A\}$ である。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{採用問題の解析}
+  \begin{itemize}
+    \item<+-> $X$ を新しい助手を採用する回数を表す確率変数とする。
+    $\E[X]$ を求めたい。
+    \item<+-> $X_i$ を候補 $i$ が採用される指標確率変数とする。つまり、
+    \begin{align*}
+      X_i & = I\{\text{候補 $i$ が採用される}\} \\
+          & =
+          \begin{cases}
+            1 & \text{候補 $i$ が採用されるとき} \\
+            0 & \text{候補 $i$ が採用されないとき} 
+          \end{cases}
+    \end{align*}
+    \item<+-> よって、$X=X_1+X_2+\cdots+X_n$。
+    \item<+-> そして、$\E[X_i]=\Pr\{\text{候補 $i$ が採用される}\}$。
+    \item<+-> 候補 $i$ が候補 $1$ から $i-1$ より適任であるときのみ採用される。
+    候補がランダムに判断されると仮定したため、
+    候補 $i$ が候補 $1$ から $i-1$ より適任である確率は $1/i$ であり、以下が成り立つ：
+    \[
+      \E[X_i]=1/i
+    \]
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{採用回数の期待値}
+  $\E[X]$ を求める。
+  \begin{align*}
+    \E[X] & = \E\left[\sum_{i=1}^nX_i\right] \\
+          & = \sum_{i=1}^n\E[X_i] \\
+          & = \sum_{i=1}^n\frac{1}{i} \\
+          & = \ln n + O(1)
+  \end{align*}
+  したがって、平均時の費用は $O(c_h\ln n)$ である。
+  最悪時の $O(c_hn)$ より安い。
+\end{frame}
+
+\begin{frame}{乱択アルゴリズム}
+  \begin{itemize}
+    \item 候補が適任でない順に紹介される最悪の場合が起こらないようにしたい。
+    \item 紹介される候補をランダムに選択する、
+    \textbf{乱択アルゴリズム（randomized algorithm）}を採用。
+    \item （確率的にみて）平均時の効率が保証される。
+  \end{itemize}
+  \begin{figure}
+    \includegraphics[width=0.70\textwidth]{../resources/pseudo-05-02}
+  \end{figure}
 \end{frame}
 
 \end{document}
