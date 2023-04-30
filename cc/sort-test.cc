@@ -3,10 +3,9 @@
 #include <iterator>
 #include <vector>
 
-#include "absl/strings/str_cat.h"
-#include "absl/strings/str_join.h"
 #include "gmock/gmock.h"
 #include "cc/sort.h"
+#include "cc/string-utils.h"
 
 using ::testing::ElementsAre;
 using ::testing::ElementsAreArray;
@@ -17,11 +16,7 @@ struct SortInstance {
 };
 
 const std::vector<std::function<void(std::vector<int>&)>> SORT_FUNCTIONS =
-    {cc::InsertionSort, cc::MergeSort};
-
-std::string PrintVector(const std::vector<int>& input) {
-  return absl::StrCat("{", absl::StrJoin(input, ","), "}");
-}
+    {cc::InsertionSort, cc::MergeSort, cc::HeapSort};
 
 void DoSortTest(SortInstance instance,
                 std::function<void(std::vector<int>&)> sort) {
@@ -31,9 +26,12 @@ void DoSortTest(SortInstance instance,
             std::back_inserter(input));
 
   sort(input);
-  std::cout << "   input: " << PrintVector(instance.input) << std::endl;
-  std::cout << "  output: " << PrintVector(input) << std::endl;
-  std::cout << "expected: " << PrintVector(instance.expected) << std::endl;
+  std::cout << "   input: " << cc::string_utils::PrintVector(instance.input)
+      << std::endl;
+  std::cout << "  output: " << cc::string_utils::PrintVector(input)
+      << std::endl;
+  std::cout << "expected: " << cc::string_utils::PrintVector(instance.expected)
+      << std::endl;
   EXPECT_THAT(input, ElementsAreArray(instance.expected));
 }
 
